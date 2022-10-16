@@ -4,8 +4,8 @@ Requested by [Alyra](https://alyra.fr/) for first project request of the Rinkeby
 
 # Notes
 
-- Contract code is in **contracts/Voling.sol**
-- Testing script is in **test/index.ts**
+- Contract code is in [contracts/Voling.sol](https://github.com/Cizeon/alyra/blob/c2b3802cca2907863e35ea0b51a8c8c0e61389c8/01%20-%20Voting/contracts/Voting.sol)
+- Testing script is in [test/index.ts](https://github.com/Cizeon/alyra/blob/c2b3802cca2907863e35ea0b51a8c8c0e61389c8/01%20-%20Voting/test/index.ts)
 
 Contract compiles and can be deployed on Remix.
 
