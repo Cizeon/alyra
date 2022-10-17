@@ -3,6 +3,15 @@ pragma solidity ^0.8.17;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 
+/**
+ * @title Single voting contract.
+ * @notice Only owner can create a new vote and register voters. Voters can
+ * add proposals and tallVotes. If the vote results in a draw, contract owner
+ * chooses the winning proposal.
+ * @dev Conduct a vote following these steps: register(), createVote(),
+ * addProposal(), stopProposalPhase(), startVotingPhase(), voteFor(),
+ * tallyVotes() and eventually castVote(). resetVote() to reset.
+ */
 contract Voting is Ownable {
   enum WorkflowStatus {
     RegisteringVoters,
@@ -22,8 +31,9 @@ contract Voting is Ownable {
 
   struct Vote {
     string description;
-    /* Store the vote winners. If there is more than one, the ownern needs
-       to choose one. */
+    /** @dev Store the vote winners.
+     * If there is more than one, the contract owner needs to choose one.
+     */
     uint256[] winners;
   }
   Vote vote;
@@ -49,7 +59,7 @@ contract Voting is Ownable {
   event TipWithdrawn(uint256 _amount);
 
   /**
-   * Check if an address is in the white list before accepting to call the function.
+   * @dev Check if an address is in the white list before accepting to call the function.
    */
 
   modifier isAuthorized() {
@@ -58,7 +68,7 @@ contract Voting is Ownable {
   }
 
   /**
-   * Check that we are at the proper state before continuing.
+   * @dev Check that we are at the proper state before continuing.
    */
 
   modifier checkState(WorkflowStatus _state) {
@@ -67,7 +77,7 @@ contract Voting is Ownable {
   }
 
   /**
-   * Check that we cannot receive tips when the owner cast a draw.
+   * @dev Check that we cannot receive tips when the owner cast a draw.
    */
   modifier isNotDraw() {
     require(vote.winners.length < 2, 'cannot receive tips during a draw');
@@ -75,7 +85,8 @@ contract Voting is Ownable {
   }
 
   /**
-   * Add an address to the whitelist to allow the address to vote.
+   * @dev Add an address to the whitelist to allow the address to vote.
+   * @param _address Address to whitelist.
    */
 
   function register(address _address)
@@ -88,7 +99,8 @@ contract Voting is Ownable {
   }
 
   /**
-   * Remove an address to the whitelist to forbid them from voting.
+   * @dev Remove an address to the whitelist to forbid them from voting.
+   * @param _address Address to remove from whitelist.
    */
 
   function unregister(address _address)
@@ -101,22 +113,17 @@ contract Voting is Ownable {
   }
 
   /**
-   * Check if an address is registerd.
+   * @dev Check if an address is registerd.
+   * @param _address Check if an address is in the whitelist.
+   * @return true if whitelisted.
    */
   function isRegistered(address _address) public view returns (bool) {
     return whitelist[_address].isRegistered;
   }
 
-  /*
-   * Check if a user can vote.
-   * @return true if the adddress is allowed to vote.
-   */
-  function canVote(address _address) public view returns (bool) {
-    return whitelist[_address].isRegistered;
-  }
-
-  /*
-   * Change currentState. Not publicly available.
+  /**
+   * @dev Change currentState. Not publicly available.
+   * @param _state State to switch to. Emit an event.
    */
 
   function changeState(WorkflowStatus _state) private onlyOwner {
@@ -126,8 +133,8 @@ contract Voting is Ownable {
   }
 
   /**
-   * Reset the vote, to create a new one.
-   * @dev We can reset a vote at any state. All proposals are lost.
+   * @dev Reset the vote, to create a new one.
+   * We can reset a vote at any state. All proposals are lost.
    */
 
   function reset() public onlyOwner {
@@ -137,7 +144,8 @@ contract Voting is Ownable {
   }
 
   /**
-   * Create a new vote. Change the status.
+   * @dev Create a new vote. Change the status.
+   * @param _description A string with the description of the vote.
    */
 
   function createVote(string calldata _description)
@@ -151,6 +159,7 @@ contract Voting is Ownable {
   }
 
   /**
+   * @dev Can be used in front-end to retrieve the vote's description.
    * @return The description of a vote.
    */
   function getVoteDescription() public view returns (string memory) {
@@ -158,7 +167,7 @@ contract Voting is Ownable {
   }
 
   /**
-   * Compare two strings.
+   * @dev Compare two strings.
    * @return Return true if matches.
    */
 
@@ -167,7 +176,9 @@ contract Voting is Ownable {
   }
 
   /**
-   * During the proposal state, every white listed person can propose and when registration is ongoing.
+   * @dev During the proposal state, every white listed person can propose
+   * and when registration is ongoing.
+   * @param _description A string containing the proposal.
    */
 
   function addProposal(string calldata _description)
@@ -190,6 +201,8 @@ contract Voting is Ownable {
   }
 
   /**
+   * @dev Can be used in front-ends to get the list of current proposals.
+   * Also useful for the contract owner in case of a draw.
    * @return All registered proposals.
    */
 
@@ -198,7 +211,9 @@ contract Voting is Ownable {
   }
 
   /**
-   * Stop the proposal phase. If they are no proposals, you must wait longer or reset.
+   * @dev Stop the proposal phase.
+   * If they are no proposals, you must wait for someone to submit one
+   * or reset the whole vote.
    */
 
   function stopProposalPhase()
@@ -211,7 +226,7 @@ contract Voting is Ownable {
   }
 
   /**
-   * Starting the votes, let the rumble begin.
+   * @dev Starting the votes, let the rumble begin.
    */
 
   function startVotingPhase()
@@ -223,7 +238,8 @@ contract Voting is Ownable {
   }
 
   /**
-   * Cast a vote.
+   * @dev Cast a vote.
+   * @param _id Proposal id to vote for.
    */
 
   function voteFor(uint256 _id)
@@ -240,7 +256,7 @@ contract Voting is Ownable {
   }
 
   /**
-   * Stop voting phase.
+   * @dev Stop voting phase.
    */
 
   function stopVotingPhase() public onlyOwner checkState(WorkflowStatus.VotingSessionStarted) {
@@ -248,7 +264,10 @@ contract Voting is Ownable {
   }
 
   /**
-   * Cast a vote.
+   * @dev Cast a vote. Private function.
+   * Record winning proposal id by removing all other proposals
+   * and by setting winningProposalId.
+   * @param _id Winning proposal id.
    */
   function recordVote(uint256 _id) private {
     vote.winners = [_id];
@@ -257,7 +276,7 @@ contract Voting is Ownable {
   }
 
   /**
-   * Close the votes. Compute the results into a winner array.
+   * @dev Close the votes. Compute the results into a winner array.
    * Everyone is free to pay the gas to tally votes :-).
    */
 
@@ -280,11 +299,13 @@ contract Voting is Ownable {
   }
 
   /**
-   * If there are multiple winners, the contract owner chooses the winner and tally the votes.
+   * @dev If there are multiple winners, the contract owner chooses the winner
+   * and tally the votes. Only the winning proposals are allowed to be chosen.
+   * @param _id The id of the chosen proposal.
    */
 
   function castVote(uint256 _id) public onlyOwner checkState(WorkflowStatus.VotingSessionEnded) {
-    require(vote.winners.length > 1, 'tally first');
+    require(vote.winners.length > 1, 'already a winner');
     for (uint256 i = 0; i < vote.winners.length; i++) {
       if (vote.winners[i] == _id) {
         return recordVote(_id);
@@ -294,7 +315,8 @@ contract Voting is Ownable {
   }
 
   /**
-   * Return the winning proposals. If there is more than one,
+   * @dev For the front-end to get all winning proposals.
+   * @return Return the winning proposals. If there is more than one,
    * the owner needs to select on to get the VotesTallied status.
    */
 
@@ -308,6 +330,7 @@ contract Voting is Ownable {
   }
 
   /**
+   * @dev Return the final winner after votes are tallied.
    * @return The winner of the vote.
    */
 
@@ -316,6 +339,7 @@ contract Voting is Ownable {
   }
 
   /**
+   * @dev For front-end to get the winning proposal.
    * @return Vote description and winning proposal.
    */
 
@@ -330,7 +354,8 @@ contract Voting is Ownable {
   }
 
   /**
-   * Small tip section, in case we have generous donors ;-)
+   * @dev Small tip section, in case we have generous donors ;-)
+   * Tips are blocked during a draw until it is solved.
    */
 
   receive() external payable isNotDraw {
@@ -346,8 +371,8 @@ contract Voting is Ownable {
   }
 
   /**
-   * Withdraw tips.
-   * @dev We do not need to protect from re-entrancy attacks since it's onlyOwner.
+   * @dev Withdraw tips.
+   * We do not need to protect from re-entrancy attacks since it's onlyOwner.
    */
 
   function withdrawTips() public onlyOwner {

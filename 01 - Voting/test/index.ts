@@ -181,7 +181,7 @@ describe('Voting Contract', () => {
     });
 
     it('cannot arbitrage before attempting to tally first.', async () => {
-      await expect(votingContract.castVote(0)).to.be.revertedWith('tally first');
+      await expect(votingContract.castVote(0)).to.be.revertedWith('already a winner');
     });
 
     it('contract owner cannot choose a looser proposal.', async () => {

@@ -20,9 +20,9 @@ I added supports for tips, for fun and to experiment receiving ETH.
 
 ```console
 $ hh compile
-Generating typings for: 3 artifacts in dir: typechain-types for target: ethers-v5
-Successfully generated 16 typings!
-Compiled 3 Solidity files successfully
+Generating typings for: 1 artifacts in dir: typechain-types for target: ethers-v5
+Successfully generated 14 typings!
+Compiled 1 Solidity file successfully
 ```
 
 # Testing
@@ -96,8 +96,10 @@ $ hh test
 ·············|·····················|·············|·············|··············|···············|··············
 |  Deployments                     ·                                          ·  % of limit   ·             │
 ···································|·············|·············|··············|···············|··············
-|  Voting                          ·          -  ·          -  ·     1831792  ·        6.1 %  ·          -  │
+|  Voting                          ·          -  ·          -  ·     1847845  ·        6.2 %  ·          -  │
 ·----------------------------------|-------------|-------------|--------------|---------------|-------------·
+
+  23 passing (2s)
 ```
 
 # Deploy
@@ -106,5 +108,5 @@ $ hh test
 $ hh run scripts/deploy.ts
 [+] Deployer balance: 10000000000000000000000
 Contract deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
-[+] Deployer balance: 9999994673387500000000
+[+] Deployer balance: 9999996535290625000000
 ```
