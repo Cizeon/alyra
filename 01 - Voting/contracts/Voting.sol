@@ -10,7 +10,8 @@ import '@openzeppelin/contracts/access/Ownable.sol';
  * chooses the winning proposal.
  * @dev Conduct a vote following these steps: register(), createVote(),
  * addProposal(), stopProposalPhase(), startVotingPhase(), voteFor(),
- * tallyVotes() and eventually castVote(). resetVote() to reset.
+ * stopVotingPhase(), tallyVotes() and eventually castVote().
+ * resetVote() to reset.
  */
 contract Voting is Ownable {
   enum WorkflowStatus {
@@ -31,7 +32,8 @@ contract Voting is Ownable {
 
   struct Vote {
     string description;
-    /** @dev Store the vote winners.
+    /**
+     * @dev Store the vote winners.
      * If there is more than one, the contract owner needs to choose one.
      */
     uint256[] winners;
