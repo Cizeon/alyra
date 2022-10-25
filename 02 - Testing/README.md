@@ -4,7 +4,7 @@ Requested by [Alyra](https://alyra.fr/) for first project request of the Rinkeby
 
 # Notes
 
-- Testing script is in [test/test.js]()
+- Testing script is in [test/test.js](https://github.com/Cizeon/alyra/blob/main/02%20-%20Testing/test/test.js)
 
 For the previous course, I used Hardhat.
 This time is used Truffle to match the requirements.
