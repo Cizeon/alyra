@@ -23,7 +23,7 @@ The script is testing 31 cases divided in these categories:
 
 # Testing
 
-```console
+```
 $ truffle test
 Using network 'development'.
 
