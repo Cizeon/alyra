@@ -2,15 +2,18 @@
 
 This is a simple unit tests using Truffle and Chai for Alyra's sample Voting contract.
 
-Requested by [Alyra](https://alyra.fr/) for first project request of the Rinkeby promotion.
+Requested by [Alyra](https://alyra.fr/) for second project request of the Rinkeby promotion.
 
 # Notes
 
 - My testing script is located in [test/test.js](https://github.com/Cizeon/alyra/blob/main/02%20-%20Testing/test/test.js)
 
-For the previous course, I used Hardhat. This time is used Truffle to match with the requirements.
+For the previous course, I used Hardhat. This time is used Truffle to match with the training.
+Code coverage is not supported since the solidity-coverage plugin is now only working with Hardhat.
 
-The script is testing 31 cases:
+I used the eth-gas-reporter plugin to compute costs.
+
+The script is testing 31 cases divided in these categories:
 
 - Ownership
 - Registration state
