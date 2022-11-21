@@ -23,7 +23,7 @@ module.exports = {
           'https://goerli.infura.io/v3/' + process.env.INFURA_API_KEY,
         );
       },
-      network_id: '5', // eslint-disable-line camelcase
+      network_id: '5',
     },
   },
 

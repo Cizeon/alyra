@@ -1,4 +1,4 @@
-# Contracts Modificatons
+# Contracts Modifications
 
 The requirements was to modify the given contract the less possible, only adding meaningful changes.
 
