@@ -1,3 +1,13 @@
+# Dapp
+
+The Dapp was deployed on Vercel: https://alyra-cizeon.vercel.app/
+
+For the demo, you can use the wallet below to see the voting result.
+
+- Address: 0x210B8E2B9B15dd618d5008CDD8A8aa7e462D2Fe4
+- Mnemonic: pride unknown dentist lucky adult few catch police ride orbit mask parrot
+- PrivateKey: 0xfe5b40e80f4eca8e829fa57034d85989d818c7502f9c307c8955ba3af479de11
+
 # Contracts Modifications
 
 The requirements was to modify the given contract the less possible, only adding meaningful changes.
@@ -28,6 +38,7 @@ constructor(string memory _question) Ownable() {
 # Contract on Goerli
 
 The contract on Goerli: https://goerli.etherscan.io/address/0xe451b90f00e72d0a5f9f9c550b83eedd7d66d094
+You can check the transaction's history for a voting round.
 
 ```console
    Deploying 'Voting'
