@@ -58,8 +58,9 @@ contract Voting is Ownable {
 
   /**
    * Get the voter's information based on the wallet address.
-   * @param _addr Voter's address.
    * @dev Restricted to voters.
+   * @param _addr Voter's address.
+   * @return Voter's information.
    */
   function getVoter(address _addr) external view onlyVoters returns (Voter memory) {
     return voters[_addr];
@@ -67,8 +68,9 @@ contract Voting is Ownable {
 
   /**
    * Get the proposal's details.
-   * @param _id Proposal id.
    * @dev Restricted to voters.
+   * @param _id Proposal id.
+   * @return Proposal's details.
    */
   function getOneProposal(uint256 _id) external view onlyVoters returns (Proposal memory) {
     return proposalsArray[_id];
@@ -76,8 +78,8 @@ contract Voting is Ownable {
 
   /**
    * Add a voter.
-   * @param _addr Voter's address.
    * @dev Restricted to the owner.
+   * @param _addr Voter's address.
    */
   function addVoter(address _addr) external onlyOwner {
     require(
