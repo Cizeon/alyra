@@ -35,7 +35,7 @@ constructor(string memory _question) Ownable() {
 }
 ```
 
-Added comments to the original smart conttact.
+Added comments to the original smart contract.
 
 # Contract on Goerli
 
