@@ -2,6 +2,15 @@
 pragma solidity 0.8.17;
 import '../node_modules/@openzeppelin/contracts/access/Ownable.sol';
 
+/**
+ * @title Single voting contract.
+ * @notice Only owner can create a new vote and register voters. Voters can
+ * add proposals, vote and see the result. If the vote results in a draw,
+ * the first proposal wins.
+ * @dev Conduct a vote following these steps: addVoter(),
+ * startProposalsRegistering(), addProposal(), endProposalsRegistering(),
+ * startVotingSession(), setVote(), endVotingSession(), tallyVotes()
+ */
 contract Voting is Ownable {
   uint256 public winningProposalID;
   string public question;
@@ -40,24 +49,36 @@ contract Voting is Ownable {
     _;
   }
 
+  /**
+   * The question to vote is written on chain.
+   */
   constructor(string memory _question) Ownable() {
     question = _question;
   }
 
-  // on peut faire un modifier pour les états
-
-  // ::::::::::::: GETTERS ::::::::::::: //
-
+  /**
+   * Get the voter's information based on the wallet address.
+   * @param _addr Voter's address.
+   * @dev Restricted to voters.
+   */
   function getVoter(address _addr) external view onlyVoters returns (Voter memory) {
     return voters[_addr];
   }
 
+  /**
+   * Get the proposal's details.
+   * @param _id Proposal id.
+   * @dev Restricted to voters.
+   */
   function getOneProposal(uint256 _id) external view onlyVoters returns (Proposal memory) {
     return proposalsArray[_id];
   }
 
-  // ::::::::::::: REGISTRATION ::::::::::::: //
-
+  /**
+   * Add a voter.
+   * @param _addr Voter's address.
+   * @dev Restricted to the owner.
+   */
   function addVoter(address _addr) external onlyOwner {
     require(
       workflowStatus == WorkflowStatus.RegisteringVoters,
@@ -69,8 +90,11 @@ contract Voting is Ownable {
     emit VoterRegistered(_addr);
   }
 
-  // ::::::::::::: PROPOSAL ::::::::::::: //
-
+  /**
+   * Add a new proposal.
+   * @param _desc Proposal's description.
+   * @dev Restricted to voters.
+   */
   function addProposal(string calldata _desc) external onlyVoters {
     /* Fixing a potential DOS if there are too many proposals in the array. */
     require(proposalsArray.length <= 1000, 'Too many proposals');
@@ -90,8 +114,11 @@ contract Voting is Ownable {
     emit ProposalRegistered(proposalsArray.length - 1);
   }
 
-  // ::::::::::::: VOTE ::::::::::::: //
-
+  /**
+   * Cast a vote.
+   * @param _id Proposal's id.
+   * @dev Restricted to voters.
+   */
   function setVote(uint256 _id) external onlyVoters {
     require(
       workflowStatus == WorkflowStatus.VotingSessionStarted,
@@ -107,8 +134,10 @@ contract Voting is Ownable {
     emit Voted(msg.sender, _id);
   }
 
-  // ::::::::::::: STATE ::::::::::::: //
-
+  /**
+   * Start proposal registration.
+   * @dev Restricted to voters.
+   */
   function startProposalsRegistering() external onlyOwner {
     require(
       workflowStatus == WorkflowStatus.RegisteringVoters,
@@ -126,6 +155,10 @@ contract Voting is Ownable {
     );
   }
 
+  /**
+   * End proposal registration.
+   * @dev Restricted to voters.
+   */
   function endProposalsRegistering() external onlyOwner {
     require(
       workflowStatus == WorkflowStatus.ProposalsRegistrationStarted,
@@ -138,6 +171,10 @@ contract Voting is Ownable {
     );
   }
 
+  /**
+   * Start the voting session.
+   * @dev Restricted to voters.
+   */
   function startVotingSession() external onlyOwner {
     require(
       workflowStatus == WorkflowStatus.ProposalsRegistrationEnded,
@@ -150,6 +187,10 @@ contract Voting is Ownable {
     );
   }
 
+  /**
+   * Stop the voting session.
+   * @dev Restricted to voters.
+   */
   function endVotingSession() external onlyOwner {
     require(
       workflowStatus == WorkflowStatus.VotingSessionStarted,
@@ -162,6 +203,10 @@ contract Voting is Ownable {
     );
   }
 
+  /**
+   * Tally votes
+   * @dev On draw, first proposal wins.
+   */
   function tallyVotes() external onlyOwner {
     require(
       workflowStatus == WorkflowStatus.VotingSessionEnded,

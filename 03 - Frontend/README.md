@@ -35,9 +35,12 @@ constructor(string memory _question) Ownable() {
 }
 ```
 
+Added comments to the original smart conttact.
+
 # Contract on Goerli
 
 The contract on Goerli: https://goerli.etherscan.io/address/0xe451b90f00e72d0a5f9f9c550b83eedd7d66d094
+
 You can check the transaction's history for a voting round.
 
 ```console
